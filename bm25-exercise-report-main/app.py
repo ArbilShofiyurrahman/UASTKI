@@ -23,7 +23,7 @@ def main():
         layout="wide",
         initial_sidebar_state="auto",  # Can be "auto", "expanded", "collapsed"
         # String or None. Strings get appended with "• Streamlit".
-        page_title="BM25 based Information Retrieval System",
+        page_title="CISI",
         page_icon="🔎",  # String, anything supported by st.image, or None.
     )
 
@@ -56,7 +56,7 @@ def main():
 
     # UI
     # st.header(f':mag_right: {algo}')
-    st.header(':mag_right: BM25 based Information Retrieval System')
+    st.header(':mag_right: CISI')
 
     st.markdown('''
         <a href="https://github.com/tcvieira/bm25-exercise-report" target="_blank" style="text-decoration: none;">
