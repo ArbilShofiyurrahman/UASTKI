@@ -5,6 +5,7 @@ import pickle
 import time
 import streamlit as st
 from rank_bm25 import BM25Okapi, BM25Plus
+from bm25Simple import BM25Simple
 
 path = os.path.dirname(__file__)
 print(path)
@@ -18,12 +19,15 @@ print(subprocess.run(['ls -la content/'], shell=True))
 def main():
 
     st.set_page_config(
+        # Can be "centered" or "wide". In the future also "dashboard", etc.
         layout="wide",
-        initial_sidebar_state="auto",
+        initial_sidebar_state="auto",  # Can be "auto", "expanded", "collapsed"
+        # String or None. Strings get appended with "• Streamlit".
         page_title="Sistem Pencarian Menggunakan Metode BM25 Dalam Dokumen CISI",
-        page_icon="🔎",
+        page_icon="🔎",  # String, anything supported by st.image, or None.
     )
 
+    # LAYOUT
     hide_menu_style = """
         <style>
         #MainMenu {visibility: hidden; }
@@ -31,8 +35,28 @@ def main():
         </style>
         """
     st.markdown(hide_menu_style, unsafe_allow_html=True)
+    # padding = 2
+    # st.markdown(f""" <style>
+    #     .reportview-container .main .block-container{{
+    #         padding-top: {padding}rem;
+    #         padding-right: {padding}rem;
+    #         padding-left: {padding}rem;
+    #         padding-bottom: {padding}rem;
+    #     }} </style> """, unsafe_allow_html=True)
 
-    st.header(':mag_right: Sistem Pencarian Menggunakan Metode BM25 Dalam Dokumen CISI')
+    # horizontal radios
+    st.write(
+        '<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
+
+    # load documents
+    corpus = load_docs()
+
+    # load models
+    bm25_simple, bm25_okapi, bm25_plus = load_models()
+
+    # UI
+    # st.header(f':mag_right: {algo}')
+    st.header(':mag_right: BM25 based Information Retrieval System')
 
     st.markdown('''
         <a href="https://github.com/tcvieira/bm25-exercise-report" target="_blank" style="text-decoration: none;">
@@ -42,12 +66,21 @@ def main():
 
     st.markdown('---')
 
+    # Sidebar
     st.sidebar.markdown('---')
     st.sidebar.markdown('# About CISI')
 
     st.sidebar.markdown('''
-        The CISI CISI adalah singkatan dari "Commonwealth Institute of Science and Industry". CISI adalah sebuah institusi yang didirikan di Britania Raya pada tahun 1964 dengan tujuan mengembangkan ilmu pengetahuan dan teknologi serta mendorong inovasi dalam berbagai bidang seperti industri, sains, dan teknologi. Institusi ini berfokus pada riset, pendidikan, dan kolaborasi dengan industri untuk memajukan pengetahuan dan menghasilkan dampak positif bagi masyarakat.
-    ''')
+        The CISI (Computer and Information Science Index) is a collection of documents used in information retrieval research. This system utilizes the BM25 method for information retrieval and searches through the CISI document corpus. You can enter a query in the search bar and see the most relevant documents retrieved by different BM25 variants.
+
+        **Query Examples**
+        - What system combines multiprogramming or remote station in information retrieval? What will be the extent of its use in the future?
+        - What problems and concerns exist in making descriptive titles? What difficulties are involved in automatically taking articles from approximate titles?
+        - What is information science? Provide a definition if possible.
+        - Some considerations regarding the cost-effectiveness of online services in libraries
+        - Fast Procedures for Computing Similarity Coefficients on Automatic Classification
+
+        ''')
 
     with st.form("search_form"):
         query = st.text_input(
@@ -63,6 +96,14 @@ def main():
             col1, col2 = st.columns(2)
 
             with col1:
+                st.subheader('BM25 Simple')
+
+                bm25_simple_time, most_relevant_documents = search_docs(
+                    bm25_simple, query, corpus)
+                st.caption(f'time: {bm25_simple_time}')
+                print_docs(most_relevant_documents)
+
+            with col2:
                 st.subheader('BM25OKapi')
 
                 bm25_okapi_time, most_relevant_documents = search_docs(
@@ -70,13 +111,6 @@ def main():
                 st.caption(f'time: {bm25_okapi_time}')
                 print_docs(most_relevant_documents)
 
-            with col2:
-                st.subheader('BM25+')
-
-                bm25_plus_time, most_relevant_documents = search_docs(
-                    bm25_plus, query, corpus)
-                st.caption(f'time: {bm25_plus_time}')
-                print_docs(most_relevant_documents)
         else:
             st.text('add some query')
 
@@ -103,6 +137,7 @@ def print_docs(docs):
 
 @st.cache_resource
 def load_docs():
+    # Processing DOCUMENTS
     doc_set = {}
     doc_id = ""
     doc_text = ""
@@ -121,23 +156,27 @@ def load_docs():
             doc_id = ""
             doc_text = ""
         else:
+            # The first 3 characters of a line can be ignored.
             doc_text += l.strip()[3:] + " "
     return list(doc_set.values())
 
 
 @st.cache_resource
 def load_models():
-    model_file, _ = urllib.request.urlretrieve(
-        'https://gist.githubusercontent.com/ArbilShofiyurrahman/ea2f1d67fa0d6debc10f800d73eb132a/raw/024c8eb8d1260f649d4c0e56b7b96ce8a17e2d61/cisi_bm25Okapi', 'cisi_bm25Okapi.downloaded')
-    with open(model_file, 'rb') as f:
-        bm25_okapi = pickle.load(f)
 
-    model_file, _ = urllib.request.urlretrieve(
-        'https://gist.githubusercontent.com/ArbilShofiyurrahman/6be141fcf7bb4fd7d57b1546503b3ae6/raw/4b92a8c47b583ed8906484f2d4dbd09d133d7b5e/cisi_bm25Plus', 'cisi_bm25Plus.downloaded')
-    with open(model_file, 'rb') as f:
-        bm25_plus = pickle.load(f)
+    bm25_simple_file, _ = urllib.request.urlretrieve(
+        'https://github.com/tcvieira/bm25-exercise-report/blob/main/models/BM25_simple.pkl?raw=true', 'bm25_simple_file.downloaded')
+    with open(bm25_simple_file, 'rb') as file:
+        bm25_simple: BM25Simple = pickle.load(file)
+        print(bm25_simple.corpus_size)
 
-    return bm25_okapi, bm25_plus
+    bm25_okapi_file, _ = urllib.request.urlretrieve(
+        'https://github.com/ArbilShofiyurrahman/UAS/blob/main/bm25-exercise-report-main/models/BM25Okapi.pkl?raw=true', 'bm25_okapi_file.downloaded')
+    with open(bm25_okapi_file, 'rb') as file:
+        bm25_okapi: BM25Okapi = pickle.load(file)
+        print(bm25_okapi.corpus_size)
+
+    return bm25_simple, bm25_okapi
 
 
 if __name__ == "__main__":
