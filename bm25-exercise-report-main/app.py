@@ -19,15 +19,12 @@ print(subprocess.run(['ls -la content/'], shell=True))
 def main():
 
     st.set_page_config(
-        # Can be "centered" or "wide". In the future also "dashboard", etc.
         layout="wide",
-        initial_sidebar_state="auto",  # Can be "auto", "expanded", "collapsed"
-        # String or None. Strings get appended with "• Streamlit".
+        initial_sidebar_state="auto",
         page_title="Sistem Pencarian Menggunakan Metode BM25 Dalam Dokumen CISI",
-        page_icon="🔎",  # String, anything supported by st.image, or None.
+        page_icon="🔎",
     )
 
-    # LAYOUT
     hide_menu_style = """
         <style>
         #MainMenu {visibility: hidden; }
@@ -35,27 +32,14 @@ def main():
         </style>
         """
     st.markdown(hide_menu_style, unsafe_allow_html=True)
-    # padding = 2
-    # st.markdown(f""" <style>
-    #     .reportview-container .main .block-container{{
-    #         padding-top: {padding}rem;
-    #         padding-right: {padding}rem;
-    #         padding-left: {padding}rem;
-    #         padding-bottom: {padding}rem;
-    #     }} </style> """, unsafe_allow_html=True)
 
-    # horizontal radios
     st.write(
         '<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
 
-    # load documents
     corpus = load_docs()
 
-    # load models
     bm25_simple, bm25_okapi, bm25_plus = load_models()
 
-    # UI
-    # st.header(f':mag_right: {algo}')
     st.header(':mag_right: Sistem Pencarian Menggunakan Metode BM25 Dalam Dokumen CISI')
 
     st.markdown('''
@@ -66,7 +50,6 @@ def main():
 
     st.markdown('---')
     
-     # Sidebar
     st.sidebar.markdown('---')
     st.sidebar.markdown('# About CISI')
 
@@ -136,7 +119,6 @@ def print_docs(docs):
 
 @st.cache_resource
 def load_docs():
-    # Processing DOCUMENTS
     doc_set = {}
     doc_id = ""
     doc_text = ""
@@ -155,7 +137,6 @@ def load_docs():
             doc_id = ""
             doc_text = ""
         else:
-            # The first 3 characters of a line can be ignored.
             doc_text += l.strip()[3:] + " "
     return list(doc_set.values())
 
@@ -163,7 +144,6 @@ def load_docs():
 @st.cache_resource
 def load_models():
 
-    
     bm25_okapi_file, _ = urllib.request.urlretrieve(
         'https://github.com/ArbilShofiyurrahman/UAS/blob/main/bm25-exercise-report-main/models/BM25Okapi.pkl?raw=true', 'bm25_okapi_file.downloaded')
     with open(bm25_okapi_file, 'rb') as file:
