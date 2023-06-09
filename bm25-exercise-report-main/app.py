@@ -23,7 +23,7 @@ def main():
         layout="wide",
         initial_sidebar_state="auto",  # Can be "auto", "expanded", "collapsed"
         # String or None. Strings get appended with "• Streamlit".
-        page_title="BM25 based Information Retrieval System",
+        page_title="Sistem Pencarian Menggunakan Metode BM25 Dalam Dokumen CISI",
         page_icon="🔎",  # String, anything supported by st.image, or None.
     )
 
@@ -56,7 +56,7 @@ def main():
 
     # UI
     # st.header(f':mag_right: {algo}')
-    st.header(':mag_right: BM25 based Information Retrieval System')
+    st.header(':mag_right: Sistem Pencarian Menggunakan Metode BM25 Dalam Dokumen CISI')
 
     st.markdown('''
         <a href="https://github.com/tcvieira/bm25-exercise-report" target="_blank" style="text-decoration: none;">
@@ -65,19 +65,26 @@ def main():
         ''', unsafe_allow_html=True)
 
     st.markdown('---')
+    
+     # Sidebar
+    st.sidebar.markdown('---')
+    st.sidebar.markdown('# About CISI')
+
+    st.sidebar.markdown('''
+        The CISI CISI adalah singkatan dari "Commonwealth Institute of Science and Industry". CISI adalah sebuah institusi yang didirikan di Britania Raya pada tahun 1964 dengan tujuan mengembangkan ilmu pengetahuan dan teknologi serta mendorong inovasi dalam berbagai bidang seperti industri, sains, dan teknologi. Institusi ini berfokus pada riset, pendidikan, dan kolaborasi dengan industri untuk memajukan pengetahuan dan menghasilkan dampak positif bagi masyarakat.
 
     with st.form("search_form"):
         query = st.text_input(
-            'Query', 'How much do information retrieval and dissemination systems, as well as automated libraries, cost? Are they worth it to the researcher and to industry?')
+            'Query', 'IPING GILA IPING GILA IPING GILA')
         st.caption('no text preprocessing')
 
         with st.expander("Query Examples"):
             st.markdown('''
-                        - What systems incorporate multiprogramming or remote stations in information retrieval?  What will be the extent of their use in the future?
-                        - What problems and concerns are there in making up descriptive titles? What difficulties are involved in automatically retrieving articles from approximate titles?
-                        - What is information science?  Give definitions where possible.
-                        - Some Considerations Relating to the Cost-Effectiveness of Online Services in Libraries
-                        - A Fast Procedure for the Calculation of Similarity Coefficients in Automatic Classification
+                        - Sistem apa yang menggabungkan multiprogramming atau stasiun jarak jauh dalam pencarian informasi? Apa yang akan menjadi sejauh mana penggunaannya di masa depan?
+                        - Masalah dan kekhawatiran apa yang ada dalam membuat judul deskriptif? Kesulitan apa yang terlibat dalam mengambil artikel secara otomatis dari perkiraan judul?
+                        - Apa itu ilmu informasi? Berikan definisi jika memungkinkan.
+                        - Beberapa Pertimbangan Terkait Keefektifan Biaya Layanan Online di Perpustakaan
+                        - Prosedur Cepat Perhitungan Koefisien Kesamaan pada Klasifikasi Otomatis
                         ''')
 
         submitted = st.form_submit_button('Search')
@@ -86,17 +93,9 @@ def main():
         if query:
             st.markdown('---')
 
-            col1, col2, col3 = st.columns(3)
+            col1, col2 = st.columns(2)
 
             with col1:
-                st.subheader('BM25 Simple')
-
-                bm25_simple_time, most_relevant_documents = search_docs(
-                    bm25_simple, query, corpus)
-                st.caption(f'time: {bm25_simple_time}')
-                print_docs(most_relevant_documents)
-
-            with col2:
                 st.subheader('BM25OKapi')
 
                 bm25_okapi_time, most_relevant_documents = search_docs(
@@ -104,7 +103,7 @@ def main():
                 st.caption(f'time: {bm25_okapi_time}')
                 print_docs(most_relevant_documents)
 
-            with col3:
+            with col2:
                 st.subheader('BM25+')
 
                 bm25_plus_time, most_relevant_documents = search_docs(
@@ -164,12 +163,7 @@ def load_docs():
 @st.cache_resource
 def load_models():
 
-    bm25_simple_file, _ = urllib.request.urlretrieve(
-        'https://github.com/tcvieira/bm25-exercise-report/blob/main/models/BM25_simple.pkl?raw=true', 'bm25_simple_file.downloaded')
-    with open(bm25_simple_file, 'rb') as file:
-        bm25_simple: BM25Simple = pickle.load(file)
-        print(bm25_simple.corpus_size)
-
+    
     bm25_okapi_file, _ = urllib.request.urlretrieve(
         'https://github.com/ArbilShofiyurrahman/UAS/blob/main/bm25-exercise-report-main/models/BM25Okapi.pkl?raw=true', 'bm25_okapi_file.downloaded')
     with open(bm25_okapi_file, 'rb') as file:
