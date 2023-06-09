@@ -68,7 +68,7 @@ def main():
 
     with st.form("search_form"):
         query = st.text_input(
-            'Query', 'How much do information retrieval and dissemination systems, as well as automated libraries, cost? Are they worth it to the researcher and to industry?')
+            'Query', 'IPING GILA IPING GILA')
         st.caption('no text preprocessing')
 
         with st.expander("Query Examples"):
