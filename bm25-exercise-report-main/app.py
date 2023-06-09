@@ -66,21 +66,28 @@ def main():
 
     st.markdown('---')
 
+    st.sidebar.markdown('---')
+    st.sidebar.markdown('# About CISI')
+
+    st.sidebar.markdown('''
+        The CISI CISI adalah singkatan dari "Commonwealth Institute of Science and Industry". CISI adalah sebuah institusi yang didirikan di Britania Raya pada tahun 1964 dengan tujuan mengembangkan ilmu pengetahuan dan teknologi serta mendorong inovasi dalam berbagai bidang seperti industri, sains, dan teknologi. Institusi ini berfokus pada riset, pendidikan, dan kolaborasi dengan industri untuk memajukan pengetahuan dan menghasilkan dampak positif bagi masyarakat.
+    ''')
+
     with st.form("search_form"):
         query = st.text_input(
-            'Query', 'IPING GILA IPING GILA')
-        st.caption('tanpa pemrosesan teks')
+            'Query', 'Berapa biaya sistem pengambilan dan penyebaran informasi, serta perpustakaan otomatis? Apakah mereka layak untuk peneliti dan industri?')
+        st.caption('no text preprocessing')
 
-        with st.expander("Contoh Pertanyaan"):
+        with st.expander("Query Examples"):
             st.markdown('''
-                        - Sistem apa yang menggabungkan multiprogramming atau stasiun jarak jauh dalam pencarian informasi? Apa yang akan menjadi sejauh mana penggunaannya di masa depan?
-                        - Apa masalah dan perhatian yang ada dalam membuat judul yang deskriptif? Apa kesulitan yang terlibat dalam mengambil artikel secara otomatis dari judul yang hampir sesuai?
-                        - Apa itu ilmu informasi? Berikan definisi jika memungkinkan.
-                        - Pertimbangan-Pertimbangan Terkait Efektivitas Biaya Layanan Online di Perpustakaan
-                        - Prosedur Cepat untuk Perhitungan Koefisien Kesamaan dalam Klasifikasi Otomatis
+                        - What systems incorporate multiprogramming or remote stations in information retrieval?  What will be the extent of their use in the future?
+                        - What problems and concerns are there in making up descriptive titles? What difficulties are involved in automatically retrieving articles from approximate titles?
+                        - What is information science?  Give definitions where possible.
+                        - Some Considerations Relating to the Cost-Effectiveness of Online Services in Libraries
+                        - A Fast Procedure for the Calculation of Similarity Coefficients in Automatic Classification
                         ''')
 
-        submitted = st.form_submit_button('Cari')
+        submitted = st.form_submit_button('Search')
 
     if submitted:
         if query:
@@ -93,7 +100,7 @@ def main():
 
                 bm25_simple_time, most_relevant_documents = search_docs(
                     bm25_simple, query, corpus)
-                st.caption(f'waktu: {bm25_simple_time}')
+                st.caption(f'time: {bm25_simple_time}')
                 print_docs(most_relevant_documents)
 
             with col2:
@@ -101,7 +108,7 @@ def main():
 
                 bm25_okapi_time, most_relevant_documents = search_docs(
                     bm25_okapi, query, corpus)
-                st.caption(f'waktu: {bm25_okapi_time}')
+                st.caption(f'time: {bm25_okapi_time}')
                 print_docs(most_relevant_documents)
 
             with col3:
@@ -109,10 +116,10 @@ def main():
 
                 bm25_plus_time, most_relevant_documents = search_docs(
                     bm25_plus, query, corpus)
-                st.caption(f'waktu: {bm25_plus_time}')
+                st.caption(f'time: {bm25_plus_time}')
                 print_docs(most_relevant_documents)
         else:
-            st.text('tambahkan beberapa pertanyaan')
+            st.text('add some query')
 
 
 def search_docs(model, query, corpus):
@@ -168,22 +175,24 @@ def load_models():
         'https://github.com/tcvieira/bm25-exercise-report/blob/main/models/BM25_simple.pkl?raw=true', 'bm25_simple_file.downloaded')
     with open(bm25_simple_file, 'rb') as file:
         bm25_simple: BM25Simple = pickle.load(file)
-        print(bm25_simple)
+        print(bm25_simple.corpus_size)
 
     bm25_okapi_file, _ = urllib.request.urlretrieve(
-        'https://github.com/tcvieira/bm25-exercise-report/blob/main/models/BM25_OKAPI.pkl?raw=true', 'bm25_okapi_file.downloaded')
+        'https://github.com/ArbilShofiyurrahman/UAS/blob/main/bm25-exercise-report-main/models/BM25Okapi.pkl?raw=true', 'bm25_okapi_file.downloaded')
     with open(bm25_okapi_file, 'rb') as file:
         bm25_okapi: BM25Okapi = pickle.load(file)
-        print(bm25_okapi)
+        print(bm25_okapi.corpus_size)
 
     bm25_plus_file, _ = urllib.request.urlretrieve(
-        'https://github.com/tcvieira/bm25-exercise-report/blob/main/models/BM25_plus.pkl?raw=true', 'bm25_plus_file.downloaded')
+        'https://github.com/ArbilShofiyurrahman/UAS/blob/main/bm25-exercise-report-main/models/BM25Plus.pkl?raw=true', 'bm25_plus_file.downloaded')
     with open(bm25_plus_file, 'rb') as file:
         bm25_plus: BM25Plus = pickle.load(file)
-        print(bm25_plus)
+        print(bm25_plus.corpus_size)
 
+    print(subprocess.run(['ls -la'], shell=True))
+    st.success("BM25 models loaded!", icon='✅')
     return bm25_simple, bm25_okapi, bm25_plus
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
