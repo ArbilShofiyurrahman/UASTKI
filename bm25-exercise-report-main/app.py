@@ -66,6 +66,13 @@ def main():
 
     st.markdown('---')
 
+    st.sidebar.markdown('---')
+    st.sidebar.markdown('# About CISI')
+
+    st.sidebar.markdown('''
+        The CISI CISI adalah singkatan dari "Commonwealth Institute of Science and Industry". CISI adalah sebuah institusi yang didirikan di Britania Raya pada tahun 1964 dengan tujuan mengembangkan ilmu pengetahuan dan teknologi serta mendorong inovasi dalam berbagai bidang seperti industri, sains, dan teknologi. Institusi ini berfokus pada riset, pendidikan, dan kolaborasi dengan industri untuk memajukan pengetahuan dan menghasilkan dampak positif bagi masyarakat.
+    ''')
+
     with st.form("search_form"):
         query = st.text_input(
             'Query', 'IPING GILA IPING GILA')
