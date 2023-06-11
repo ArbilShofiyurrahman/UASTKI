@@ -17,17 +17,13 @@ print(subprocess.run(['ls -la content/'], shell=True))
 
 
 def main():
-
     st.set_page_config(
-        # Can be "centered" or "wide". In the future also "dashboard", etc.
         layout="wide",
-        initial_sidebar_state="auto",  # Can be "auto", "expanded", "collapsed"
-        # String or None. Strings get appended with "• Streamlit".
+        initial_sidebar_state="auto",
         page_title="Mesin Pencarian Dokumen CISI Menggunakan Metode BM25",
-        page_icon="🔎",  # String, anything supported by st.image, or None.
+        page_icon="🔎",
     )
 
-    # LAYOUT
     hide_menu_style = """
         <style>
         #MainMenu {visibility: hidden; }
@@ -35,29 +31,11 @@ def main():
         </style>
         """
     st.markdown(hide_menu_style, unsafe_allow_html=True)
-    # padding = 2
-    # st.markdown(f""" <style>
-    #     .reportview-container .main .block-container{{
-    #         padding-top: {padding}rem;
-    #         padding-right: {padding}rem;
-    #         padding-left: {padding}rem;
-    #         padding-bottom: {padding}rem;
-    #     }} </style> """, unsafe_allow_html=True)
 
-    # horizontal radios
-    st.write(
-        '<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
-
-    # load documents
     corpus = load_docs()
-
-    # load models
     bm25_simple, bm25_okapi, bm25_plus = load_models()
 
-    # UI
-    # st.header(f':mag_right: {algo}')
     st.header(':mag_right: Mesin Pencarian Dokumen CISI Menggunakan Metode BM25')
-
     st.markdown('''
         <a href="https://github.com/tcvieira/bm25-exercise-report" target="_blank" style="text-decoration: none;">
             <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" width="30" height="30" alt="github repository"></img>
@@ -84,17 +62,9 @@ def main():
         if query:
             st.markdown('---')
 
-            col1, col2, col3 = st.columns(3)
+            col1, col2 = st.columns(2)
 
             with col1:
-                st.subheader('BM25 Simple')
-
-                bm25_simple_time, most_relevant_documents = search_docs(
-                    bm25_simple, query, corpus)
-                st.caption(f'time: {bm25_simple_time}')
-                print_docs(most_relevant_documents)
-
-            with col2:
                 st.subheader('BM25OKapi')
 
                 bm25_okapi_time, most_relevant_documents = search_docs(
@@ -102,7 +72,7 @@ def main():
                 st.caption(f'time: {bm25_okapi_time}')
                 print_docs(most_relevant_documents)
 
-            with col3:
+            with col2:
                 st.subheader('BM25+')
 
                 bm25_plus_time, most_relevant_documents = search_docs(
