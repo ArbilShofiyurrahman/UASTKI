@@ -57,7 +57,7 @@ def main():
         st.caption('no text preprocessing')
         with st.expander("Query Examples"):
             st.markdown('''
-                        - apa aja
+                        - Layanan yang Dipersonalisasi untuk Peneliti Akademik
                         - Masalah dan kekhawatiran apa yang ada dalam membuat judul deskriptif? Kesulitan apa yang terlibat dalam mengambil artikel secara otomatis dari perkiraan judul?
                         - Apa itu ilmu informasi? Berikan definisi jika memungkinkan.
                         - Beberapa Pertimbangan Terkait Keefektifan Biaya Layanan Online di Perpustakaan
