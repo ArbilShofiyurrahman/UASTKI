@@ -55,6 +55,14 @@ def main():
         query = st.text_input(
             'Query', 'Berapa biaya sistem pengambilan dan penyebaran informasi, serta perpustakaan otomatis? Apakah mereka layak untuk peneliti dan industri?')
         st.caption('no text preprocessing')
+        with st.expander("Query Examples"):
+            st.markdown('''
+                        - apa aja
+                        - Masalah dan kekhawatiran apa yang ada dalam membuat judul deskriptif? Kesulitan apa yang terlibat dalam mengambil artikel secara otomatis dari perkiraan judul?
+                        - Apa itu ilmu informasi? Berikan definisi jika memungkinkan.
+                        - Beberapa Pertimbangan Terkait Keefektifan Biaya Layanan Online di Perpustakaan
+                        - Prosedur Cepat Perhitungan Koefisien Kesamaan pada Klasifikasi Otomatis
+                        ''')
 
         submitted = st.form_submit_button('Search')
 
